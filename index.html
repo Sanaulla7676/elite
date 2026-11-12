@@ -202,7 +202,7 @@ h1{font-family:"Manrope",sans-serif;font-size:clamp(32px,7vw,48px);font-weight:8
 
 <main id="top" class="wrap">
 <section class="hero">
- <div class="hero-emblem" aria-hidden="true"><img src="undefined" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"></div>
+ <div class="hero-emblem" aria-hidden="true"><svg viewBox="0 0 100 100" role="img" aria-label="Blue flame emblem"><defs><linearGradient id="fa" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".5" stop-color="#62c2ff"/><stop offset="1" stop-color="#1748d8"/></linearGradient><linearGradient id="fb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#328eff"/><stop offset="1" stop-color="#182fbe"/></linearGradient></defs><path d="M55 8C58 27 79 31 75 53c-2 13-12 23-26 28 7-13 4-21-5-31C32 37 39 21 55 8Z" fill="url(#fa)"/><path d="M35 29c-1 15 11 20 17 32 7 14-2 25-17 33 4-13-15-21-15-37 0-11 6-20 15-28Z" fill="url(#fb)"/><path d="M48 45c8 11 18 18 13 34-3 8-9 13-17 17 5-10-4-17-6-26-2-10 2-18 10-25Z" fill="#fff" opacity=".9"/></svg></div>
  <h1>Elite Perimeter</h1>
  <p class="salon-subtitle">UNISEX SALON</p>
 </section>
@@ -254,24 +254,20 @@ function renderCombos(){setScreen('Choose your combo package','Select the packag
 function makeTemplates(item){
  const service=item.kind==='service';
  const phrase=service?item.name:item.name.replace(/ Package$/i,'').replace(/ Premium Package$/i,'');
- const subject=service?item.name.toLowerCase():phrase.toLowerCase();
- const included=service?'':item.items.join(', ');
- const first=service
- ? 'I booked a <span class="placeholder">'+esc(subject)+'</span> at <span class="placeholder">Elite Perimeter Unisex Salon</span>. The service was <span class="placeholder">[describe how the appointment was handled]</span>, and my experience with <span class="placeholder">[one genuine detail or result]</span> was <span class="placeholder">[your honest reaction]</span>.'
- : 'I chose the <span class="placeholder">'+esc(phrase)+'</span> at <span class="placeholder">Elite Perimeter Unisex Salon</span>. From the package, I received <span class="placeholder">[list only the included services you actually had]</span>. My experience was <span class="placeholder">[describe what genuinely stood out]</span>.';
- const second=service
- ? 'My visit to <span class="placeholder">Elite Perimeter Unisex Salon</span> was for <span class="placeholder">'+esc(subject)+'</span>. I appreciated <span class="placeholder">[a specific part of the consultation or service, if true]</span>. The final outcome was <span class="placeholder">[your honest view of the result]</span>. The salon is in <span class="placeholder">[Ullal / Jnananjyothinagar, Bengaluru, if relevant to your visit]</span>.'
- : 'I visited <span class="placeholder">Elite Perimeter Unisex Salon</span> for its <span class="placeholder">'+esc(phrase)+'</span>. The parts of the combo I used were <span class="placeholder">[name the services you actually received]</span>. I found <span class="placeholder">[describe the staff, process or result accurately]</span>, and <span class="placeholder">[add one personal detail]</span>.';
+ const subject=esc(service?item.name.toLowerCase():phrase.toLowerCase());
+ const lead=service?'I visited Elite Perimeter Unisex Salon for '+subject+'.':'I visited Elite Perimeter Unisex Salon for the '+subject+'.';
  return [
-  {label:'Simple & specific',heading:'A natural service review',html:first},
-  {label:'More detailed',heading:'Describe your visit',html:second}
+  {label:'Short',heading:'Share your visit',html:lead+' I would like to describe my experience in my own words.'},
+  {label:'Personal',heading:'Your own experience',html:lead+' What stood out to me was '},
+  {label:'Detailed',heading:'Tell others about your visit',html:lead+' My thoughts about the service and overall visit are: '},
+  {label:'Feedback',heading:'Your honest feedback',html:lead+' Based on my own visit, my feedback is: '}
  ];
 }
 function renderTemplates(item){
  const templates=makeTemplates(item),kind=item.kind==='service'?'Separate service':'Combo package';
  const meta=item.kind==='service'?item.category:'Package price: ₹'+Number(item.price).toLocaleString('en-IN');
- const html=toolbar(kind)+'<div class="policy-note"><strong>Before copying:</strong> Replace every highlighted prompt. Keep only statements that are true about your visit. The service phrase is included naturally once; do not add keywords that do not describe your experience.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Edit the highlighted prompts and keep this review in your own voice.</div></article>').join('')+'</div>';
- setScreen(item.name,'Choose the wording closest to your actual experience, then personalize it.',html);
+ const html=toolbar(kind)+'<div class="policy-note"><strong>Before copying:</strong> These are short starting lines. Add your own honest feedback before copying. Do not post wording that does not reflect your visit.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Tap the text to add your own experience. Only share what is accurate.</div></article>').join('')+'</div>';
+ setScreen(item.name,'Choose a starting line and add your own honest feedback.',html);\n root.querySelectorAll('.template-copy').forEach(p=>p.setAttribute('contenteditable','true'));
  root.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{const p=root.querySelector('[data-review="'+btn.dataset.edit+'"]');const editing=p.getAttribute('contenteditable')==='true';if(!editing){p.setAttribute('contenteditable','true');p.focus();btn.textContent='Done';showToast('Edit the highlighted prompts, then tap Done.')}else{p.setAttribute('contenteditable','false');btn.textContent='Edit';showToast('Your edits are ready to copy.')}});
  root.querySelectorAll('[data-copy]').forEach(btn=>btn.onclick=async()=>{const p=root.querySelector('[data-review="'+btn.dataset.copy+'"]');if(p.getAttribute('contenteditable')==='true'){showToast('Tap Done before copying.');return}const text=p.innerText.replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();let copied=false;try{await navigator.clipboard.writeText(text);copied=true}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{copied=document.execCommand('copy')}catch(_){}ta.remove()}if(copied){btn.textContent='Copied ✓ Opening Google…';btn.classList.add('copied');showToast('Review copied. Google is opening; paste and submit it yourself.');setTimeout(()=>{window.location.href=REVIEW_URL},520)}else showToast('Copy was blocked. Please select and copy the text manually.')});
 }
