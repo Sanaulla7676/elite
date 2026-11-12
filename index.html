@@ -34,10 +34,11 @@ body:before{
 }
 a{color:inherit} button{font:inherit}.wrap{width:min(1160px,92vw);margin:auto}
 
-.loader{position:fixed;inset:0;background:var(--ivory);display:grid;place-items:center;z-index:100;transition:opacity .55s ease,visibility .55s ease}
-.loader.done{opacity:0;visibility:hidden}
-.loader-mark{width:102px;height:102px;border-radius:50%;overflow:hidden;box-shadow:0 15px 45px rgba(0,0,0,.14);animation:breath 1.4s ease-in-out infinite}
+.loader{position:fixed;inset:0;background:linear-gradient(145deg,#f4f7ff,#dfe9ff);display:grid;place-items:center;z-index:100;overflow:hidden;opacity:1;visibility:visible}
+.loader.done{opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s ease}
+.loader-mark{width:104px;height:104px;border-radius:50%;overflow:hidden;box-shadow:12px 12px 28px rgba(63,104,207,.24),-10px -10px 26px #fff;transform:scale(1);animation:logoLaunch 1.5s cubic-bezier(.16,.78,.22,1) forwards;will-change:transform,opacity}
 .loader-mark img{width:100%;height:100%;object-fit:cover}
+@keyframes logoLaunch{0%{transform:scale(.72);opacity:0}12%{transform:scale(1);opacity:1}58%{transform:scale(1.12);opacity:1}100%{transform:scale(18);opacity:0}}
 
 header{padding:22px 0}.nav{display:flex;justify-content:space-between;align-items:center;gap:20px}
 .brand{display:flex;align-items:center;gap:13px;text-decoration:none}
@@ -49,11 +50,11 @@ header{padding:22px 0}.nav{display:flex;justify-content:space-between;align-item
 .dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 0 5px rgba(40,120,91,.10)}
 
 .hero{padding:62px 0 26px;text-align:center;position:relative}
-.kicker{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);animation:rise .8s ease both}
+.kicker{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.72);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);animation:rise .45s ease both}
 .kicker:before,.kicker:after{content:"";width:20px;height:1px;background:currentColor;opacity:.45}
-h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(46px,8vw,92px);line-height:.94;letter-spacing:-.04em;font-weight:600;max-width:950px;margin:23px auto 18px;animation:rise .8s .08s ease both}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(46px,8vw,92px);line-height:.94;letter-spacing:-.04em;font-weight:600;max-width:950px;margin:23px auto 18px;animation:rise .45s .05s ease both}
 h1 em{font-style:italic;font-weight:500}
-.hero p{max-width:700px;margin:0 auto;color:var(--muted);font-size:15px;line-height:1.8;animation:rise .8s .16s ease both}
+.hero p{max-width:700px;margin:0 auto;color:var(--muted);font-size:15px;line-height:1.8;animation:rise .45s .1s ease both}
 .hero-underline{height:1px;width:100px;background:linear-gradient(90deg,transparent,var(--gold2),transparent);margin:30px auto 0;animation:grow 1s .28s both}
 .trust{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin:28px 0 48px}
 .trust span{font-size:11px;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
@@ -103,7 +104,7 @@ footer{padding:0 0 32px;color:#85837c;font-size:10px;text-align:center;line-heig
 @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes grow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
 @keyframes cardIn{to{opacity:1;transform:none}}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes breath{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media (max-width:820px){.grid,.steps{grid-template-columns:1fr}.hero{padding-top:45px}.section-head{align-items:flex-start;flex-direction:column}.location{display:none}h1{font-size:50px}.card{padding:21px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important;scroll-behavior:auto!important}}
 
@@ -233,7 +234,8 @@ const title=document.getElementById('view-title');
 const subtitle=document.getElementById('view-subtitle');
 const toast=document.getElementById('toast');
 let toastTimer, historyStack=[];
-window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader')?.classList.add('done'),450));
+function finishIntro(){setTimeout(()=>document.getElementById('loader')?.classList.add('done'),1500)}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',finishIntro,{once:true})}else{finishIntro()}
 function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2800)}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function goBack(){const previous=historyStack.pop();if(previous)previous();else renderHome();window.scrollTo({top:document.getElementById('workflow').offsetTop-24,behavior:'smooth'})}
