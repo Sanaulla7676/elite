@@ -260,26 +260,44 @@ function renderHome(){document.body.style.backgroundColor='#eaf0ff';historyStack
 }
 function renderCategories(){const entries=Object.entries(DATA.categories);setScreen('Choose a service category','Select the category containing the service you received.',toolbar('Separate services')+'<div class="category-grid">'+entries.map(([name,items],i)=>'<button class="category-card" data-category="'+esc(name)+'"><span class="eyebrow">Category '+String(i+1).padStart(2,'0')+'</span><strong>'+esc(name)+'</strong><span>'+items.length+' services</span></button>').join('')+'</div>');root.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>{const cat=b.dataset.category;push(renderCategories);renderServices(cat)})}
 function renderServices(cat){const items=DATA.categories[cat];setScreen(cat,'Select the exact service you personally received.',toolbar(cat)+'<div class="service-grid">'+items.map((name,i)=>'<button class="service-card" data-service="'+esc(name)+'"><span class="eyebrow">Service '+String(i+1).padStart(2,'0')+'</span><strong>'+esc(name)+'</strong></button>').join('')+'</div>');root.querySelectorAll('[data-service]').forEach(b=>b.onclick=()=>{const service=b.dataset.service;push(()=>renderServices(cat));renderTemplates({kind:'service',name:service,category:cat})})}
-function renderCombos(){setScreen('Choose your combo package','Select the package you booked. Prices shown are the listed package prices.',toolbar('Combo services')+'<div class="combo-grid">'+DATA.combos.map((c,i)=>'<button class="combo-card" data-combo="'+i+'"><span class="eyebrow">Combo '+String(i+1).padStart(2,'0')+'</span><span class="price">₹'+Number(c[1]).toLocaleString('en-IN')+'</span><strong>'+esc(c[0])+'</strong><p class="inclusions">'+esc(c[2].join(' · '))+'</p></button>').join('')+'</div><div class="policy-note">Package inclusions can vary by selected option or availability. Mention only the services you actually received.</div>');root.querySelectorAll('[data-combo]').forEach(b=>b.onclick=()=>{const c=DATA.combos[Number(b.dataset.combo)];push(renderCombos);renderTemplates({kind:'combo',name:c[0],items:c[2],price:c[1]})})}
+const COMBO_GROUPS={
+ 'Hair packages':[0],
+ 'Facial & skincare packages':[1,2,3,4,5,6,7,8,9,10,11,12,13],
+ 'Waxing, threading & body care':[1,2,3,4,5,6,7,8,9,10,11,12,13],
+ 'Manicure & pedicure packages':[4,5,8,9,10,11,12,13]
+};
+function renderCombos(){
+ const groups=Object.entries(COMBO_GROUPS);
+ setScreen('Choose a combo category','First choose what your package mainly focused on.',toolbar('Combo services')+'<div class="category-grid combo-category-grid">'+groups.map(([name,ids],i)=>'<button class="category-card" data-combo-group="'+i+'"><span class="eyebrow">Package type '+String(i+1).padStart(2,'0')+'</span><strong>'+esc(name)+'</strong><span>'+new Set(ids).size+' package options</span></button>').join('')+'</div>');
+ root.querySelectorAll('[data-combo-group]').forEach(btn=>btn.onclick=()=>{const [name,ids]=groups[Number(btn.dataset.comboGroup)];push(renderCombos);renderComboGroup(name,[...new Set(ids)])});
+}
+function renderComboGroup(name,ids){
+ setScreen(name,'Choose the exact combo package you received.',toolbar('Combo packages')+'<div class="combo-grid">'+ids.map(i=>{const item=DATA.combos[i];return '<button class="combo-card" data-combo="'+i+'"><span class="eyebrow">Combo '+String(i+1).padStart(2,'0')+'</span><span class="price">₹'+Number(item[1]).toLocaleString('en-IN')+'</span><strong>'+esc(item[0])+'</strong><p class="inclusions">'+esc(item[2].join(' · '))+'</p></button>'}).join('')+'</div>');
+ root.querySelectorAll('[data-combo]').forEach(btn=>btn.onclick=()=>{const item=DATA.combos[Number(btn.dataset.combo)];push(()=>renderComboGroup(name,ids));renderTemplates({kind:'combo',name:item[0],items:item[2],price:item[1]})});
+}
 function makeTemplates(item){
  const service=item.kind==='service';
- const phrase=service?item.name:item.name.replace(/ Package$/i,'').replace(/ Premium Package$/i,'');
- const subject=esc(service?item.name.toLowerCase():phrase.toLowerCase());
- const noun=service?'service':'package';
- return [
-  {label:'A simple review',heading:'Start with what mattered most',html:'The '+subject+' was the '+noun+' I chose. What mattered most to me was '},
-  {label:'A personal take',heading:'Describe what stood out',html:'One thing that stood out during my appointment was '},
-  {label:'A detailed review',heading:'Share the details that shaped your experience',html:'I had a few things in mind when choosing the '+subject+'. The part I would like to mention first is '},
-  {label:'A balanced review',heading:'Your overall impression',html:'My overall impression of this experience is best summed up by these details: '}
+ const raw=service?item.name:item.name.replace(/ Package$/i,'').replace(/ Premium Package$/i,'');
+ const name=raw.replace(/\s+/g,' ').trim();
+ const lower=name.toLowerCase();
+ const category=service?item.category:'combo package';
+ const place='in Bengaluru';
+ const support=category==='Hair Services'?'hair care and salon services':category==='Facial & Skincare'?'facial treatment and skincare':category==='Waxing'?'waxing and grooming':category==='Threading'?'threading and facial grooming':category==='Manicure & Pedicure'?'manicure and pedicure':(item.items||[]).some(x=>/hair|botox|keratin/i.test(x))?'hair care and beauty services':'facial, skincare and beauty services';
+ const options=[
+  {label:'Warm & straightforward',heading:'A natural, simple review',html:'I chose '+lower+' at Elite Perimeter Unisex Salon, '+place+'. I was looking for '+support+' and this was the service/package I wanted to share feedback about. It is useful to have these beauty and personal-care services available locally. I would describe my experience in my own words and recommend checking the service details before booking.'},
+  {label:'Service-focused',heading:'A review centred on the service',html:'Sharing my feedback about the '+lower+' at Elite Perimeter Unisex Salon. I was comparing options for '+support+', and this service/package matched what I had come in for. The salon offers a range of unisex salon services in Bengaluru, which makes it easier to consider related treatments in one place. This is my feedback on the service I selected.'},
+  {label:'Conversational',heading:'A more personal style',html:'I had the '+lower+' at Elite Perimeter Unisex Salon in Bengaluru and wanted to leave a note about it. I had been looking into '+support+' and chose this option from their service list. It is good to find a salon with different grooming and beauty services under one roof. This review is specifically about the service/package I selected.'},
+  {label:'Detailed & balanced',heading:'A fuller, balanced review',html:'My review is about the '+lower+' at Elite Perimeter Unisex Salon, Bengaluru. I chose this option while looking for '+support+'. The salon has a wider selection of beauty, grooming and personal-care services, so customers can compare individual treatments and packages based on their needs. I am sharing feedback on the particular service/package I selected rather than the entire service menu.'}
  ];
+ return options;
 }
 function renderTemplates(item){
  const templates=makeTemplates(item),kind=item.kind==='service'?'Separate service':'Combo package';
  const meta=item.kind==='service'?item.category:'Package price: ₹'+Number(item.price).toLocaleString('en-IN');
- const html=toolbar(kind)+'<div class="policy-note"><strong>Make it yours:</strong> Each option has a different opening. Add the real details that mattered to you, such as the result, consultation, comfort, hygiene, timing or value. Keep only details that match your experience.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Tap the text to add your own experience. Only share what is accurate.</div></article>').join('')+'</div>';
- setScreen(item.name,'Choose a starting line and add your own honest feedback.',html);
- root.querySelectorAll('.template-copy').forEach(p=>p.setAttribute('contenteditable','true'));
- root.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{const p=root.querySelector('[data-review="'+btn.dataset.edit+'"]');const editing=p.getAttribute('contenteditable')==='true';if(!editing){p.setAttribute('contenteditable','true');p.focus();btn.textContent='Done';showToast('Edit the highlighted prompts, then tap Done.')}else{p.setAttribute('contenteditable','false');btn.textContent='Edit';showToast('Your edits are ready to copy.')}});
+ const html=toolbar(kind)+'<div class="policy-note"><strong>Choose the version that matches your experience.</strong> These are complete drafts. Edit or remove any detail that does not accurately describe your visit before posting.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Tap the text to add your own experience. Only share what is accurate.</div></article>').join('')+'</div>';
+ setScreen(item.name,'Choose the review that best reflects your experience. Edit anything that does not apply.',html);
+ root.querySelectorAll('.template-copy').forEach(p=>p.setAttribute('contenteditable','false'));
+ root.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{const p=root.querySelector('[data-review="'+btn.dataset.edit+'"]');const editing=p.getAttribute('contenteditable')==='true';if(!editing){p.setAttribute('contenteditable','true');p.focus();btn.textContent='Done';showToast('Edit the review, then tap Done.')}else{p.setAttribute('contenteditable','false');btn.textContent='Edit';showToast('Your edits are ready to copy.')}});
  root.querySelectorAll('[data-copy]').forEach(btn=>btn.onclick=async()=>{const p=root.querySelector('[data-review="'+btn.dataset.copy+'"]');if(p.getAttribute('contenteditable')==='true'){showToast('Tap Done before copying.');return}const text=p.innerText.replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();let copied=false;try{await navigator.clipboard.writeText(text);copied=true}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();try{copied=document.execCommand('copy')}catch(_){}ta.remove()}if(copied){btn.textContent='Copied ✓ Opening Google…';btn.classList.add('copied');showToast('Review copied. Google is opening; paste and submit it yourself.');setTimeout(()=>{window.location.href=REVIEW_URL},520)}else showToast('Copy was blocked. Please select and copy the text manually.')});
 }
 document.getElementById('googleReviewLink').addEventListener('click',()=>showToast('Google review page opening…'));
