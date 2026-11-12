@@ -106,6 +106,35 @@ footer{padding:0 0 32px;color:#85837c;font-size:10px;text-align:center;line-heig
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes breath{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 @media (max-width:820px){.grid,.steps{grid-template-columns:1fr}.hero{padding-top:45px}.section-head{align-items:flex-start;flex-direction:column}.location{display:none}h1{font-size:50px}.card{padding:21px}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Guided review flow */
+#view-root{min-height:240px}
+.choice-grid,.category-grid,.service-grid,.combo-grid,.template-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.choice-card,.category-card,.service-card,.combo-card,.template-card{width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.88);border-radius:22px;padding:22px;box-shadow:var(--shadow2);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;color:var(--ink)}
+.choice-card:hover,.category-card:hover,.service-card:hover,.combo-card:hover,.template-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#c4a15d}
+.choice-card .eyebrow,.category-card .eyebrow,.service-card .eyebrow,.combo-card .eyebrow,.template-card .eyebrow{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:10px}
+.choice-card strong,.category-card strong,.service-card strong,.combo-card strong{display:block;font-family:"Playfair Display",Georgia,serif;font-size:24px;font-weight:600;margin-bottom:7px}
+.choice-card span:last-child,.category-card span:last-child,.service-card span:last-child,.combo-card p{display:block;color:var(--muted);font-size:12px;line-height:1.65;margin:0}
+.choice-card .choice-mark{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#f3efe5;color:var(--gold);font-size:20px;margin-bottom:18px}
+.flow-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 18px;flex-wrap:wrap}
+.back-btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:10px 14px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer}
+.flow-count{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.service-card{padding:18px}.service-card strong{font-size:20px;margin:0}
+.combo-card{position:relative;min-height:190px}.combo-card strong{font-size:20px;max-width:80%}
+.price{position:absolute;right:18px;top:17px;font-weight:800;color:var(--gold);font-size:15px}
+.inclusions{margin-top:12px!important;padding-top:11px;border-top:1px solid var(--line);font-size:11px!important}
+.template-card{cursor:default;padding:22px}
+.template-card h3{font-family:"Playfair Display";font-size:22px;margin:0 0 12px}
+.template-copy{font-size:13px;line-height:1.85;color:#41413e;min-height:115px;outline:none}
+.template-copy[contenteditable="true"]{background:#fffaf0;border:1px dashed #c4a15d;border-radius:12px;padding:12px}
+.template-copy .placeholder{background:linear-gradient(transparent 62%,rgba(196,161,93,.30) 62%);padding:0 2px}
+.template-card .note{margin-top:12px}
+.template-card .actions{margin-top:16px}
+.template-card .copy-btn{font-size:11px}
+.policy-note{margin:20px 0;padding:15px 18px;border:1px solid #e8dfca;border-radius:16px;background:#fbf8f0;color:#6d6250;font-size:11px;line-height:1.7}
+.empty-note{padding:24px;border:1px dashed var(--line);border-radius:18px;color:var(--muted);font-size:13px}
+@media(max-width:820px){.choice-grid,.category-grid,.service-grid,.combo-grid,.template-grid{grid-template-columns:1fr}.choice-card strong{font-size:22px}.combo-card{min-height:0}.template-copy{min-height:0}}
+
 </style>
 </head>
 <body>
@@ -118,91 +147,87 @@ footer{padding:0 0 32px;color:#85837c;font-size:10px;text-align:center;line-heig
 </nav>
 </header>
 
+
 <main id="top" class="wrap">
 <section class="hero">
-<div class="gold-orbit"></div>
-<div class="kicker">Your experience, beautifully expressed</div>
-<h1>Make your visit<br><em>worth a review.</em></h1>
-<p>Choose the review style that feels natural to you. Personalize the details that are genuinely true, copy it in one tap, and continue directly to the salon's Google review page.</p>
-<div class="hero-underline"></div>
-<div class="trust">
-<span><i class="check">✓</i> Natural wording</span><span><i class="check">✓</i> Mobile friendly</span><span><i class="check">✓</i> One-tap copy</span><span><i class="check">✓</i> Direct Google review flow</span>
-</div>
+ <div class="gold-orbit"></div><div class="kicker">Elite Perimeter · Bengaluru</div>
+ <h1>Share your visit<br><em>in your own words.</em></h1>
+ <p>Choose the service you actually received, then use a review starter to describe your experience honestly. Personalize every highlighted prompt before copying.</p>
+ <div class="hero-underline"></div>
+ <div class="trust"><span><i class="check">✓</i> Service-specific prompts</span><span><i class="check">✓</i> Editable wording</span><span><i class="check">✓</i> Copy to Google</span></div>
 </section>
-
-<section aria-labelledby="reviews-title">
-<div class="section-head"><h2 id="reviews-title">Review starters</h2><p>Choose one, personalize the highlighted details, then copy.</p></div>
-<div class="grid">
-
-<article class="card review-card"><div class="card-head"><span class="tag">Haircut & styling</span><span class="num">01</span></div><h3>A simple, natural review</h3><p class="review">I visited <span class="placeholder">Elite Perimeter Unisex Salon</span> for <span class="placeholder">a haircut / hair styling service</span> and liked how the stylist first understood the length, shape and finish I wanted. The service felt <span class="placeholder">professional and attentive</span>, and the final result was <span class="placeholder">exactly / close to</span> what I had in mind. The salon was comfortable and the overall experience was smooth. I’d be happy to come back for my next appointment.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">Personalize the highlighted details so the review reflects your real visit.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">First visit</span><span class="num">02</span></div><h3>For a first-time customer</h3><p class="review">This was my first visit to <span class="placeholder">Elite Perimeter Unisex Salon</span> for <span class="placeholder">my haircut / styling / grooming service</span>. The team was <span class="placeholder">friendly and professional</span> and took the time to understand what I wanted before starting. I was happy with the <span class="placeholder">finish / result</span>, and the service was handled with good attention to detail. A convenient unisex salon option around <span class="placeholder">Jnananjyothinagar / Ullal Main Road</span>.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">Use the version closest to what actually happened.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">Grooming</span><span class="num">03</span></div><h3>Short & local</h3><p class="review">I visited <span class="placeholder">Elite Perimeter Unisex Salon</span> for <span class="placeholder">a haircut / beard trim / grooming service</span> and had a good experience. The staff understood my preferences and the service was <span class="placeholder">neat, comfortable and professional</span>. I liked the final finish and the way the appointment was handled. A useful salon option for anyone around <span class="placeholder">Ullal Main Road / Jnananjyothinagar</span>.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">A concise option for customers who prefer short reviews.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">Beauty & self-care</span><span class="num">04</span></div><h3>For a beauty service</h3><p class="review">I had a pleasant visit to <span class="placeholder">Elite Perimeter Unisex Salon</span> for <span class="placeholder">a hair spa / facial / beauty service</span>. The team listened to what I asked for and handled the service with <span class="placeholder">care and professionalism</span>. I was happy with the <span class="placeholder">result / overall finish</span>, and the visit felt comfortable from start to finish. I’d consider returning for my next beauty appointment.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">Keep details specific to the service you actually received.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">Returning customer</span><span class="num">05</span></div><h3>For repeat visits</h3><p class="review">I’ve visited <span class="placeholder">Elite Perimeter Unisex Salon</span> more than once, and my recent <span class="placeholder">haircut / styling / grooming appointment</span> was another good experience. I especially liked <span class="placeholder">the consultation / styling / attention to detail</span> and how the stylist understood the look I wanted. The service was <span class="placeholder">consistent and professional</span>, which is why I’m comfortable coming back. Conveniently located around <span class="placeholder">Jnananjyothinagar / Ullal Main Road</span>.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">Best suited to genuine repeat customers.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">Team & ambience</span><span class="num">06</span></div><h3>When the team stood out</h3><p class="review">What stood out to me at <span class="placeholder">Elite Perimeter Unisex Salon</span> was the way the team handled my <span class="placeholder">hair / grooming / beauty service</span>. They were <span class="placeholder">polite, patient and attentive</span> and made the appointment feel comfortable. I appreciated that they listened to my requirements instead of rushing through the service. The final <span class="placeholder">look / finish</span> was good, and the experience was positive overall.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">A people-focused review without sounding like an advertisement.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">Very concise</span><span class="num">07</span></div><h3>One-paragraph option</h3><p class="review">Good experience at <span class="placeholder">Elite Perimeter Unisex Salon</span>. I booked <span class="placeholder">a haircut / grooming / beauty service</span> and liked how the staff understood my requirements. The service was <span class="placeholder">professional and neatly done</span>, and I was happy with the final result. A convenient option around <span class="placeholder">Jnananjyothinagar / Ullal Main Road</span>.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">Useful when the customer wants to say a little, not write a memoir.</div></article>
-
-<article class="card review-card"><div class="card-head"><span class="tag">Detailed experience</span><span class="num">08</span></div><h3>Specific, still natural</h3><p class="review">I visited <span class="placeholder">Elite Perimeter Unisex Salon</span> for <span class="placeholder">my haircut / hair styling / beard grooming appointment</span>. The stylist took time to understand the look I wanted and suggested <span class="placeholder">a suitable finish / small adjustment</span> before completing the service. I liked the attention to detail and the final result was <span class="placeholder">neat and well finished</span>. The team was <span class="placeholder">friendly and professional</span>, and the overall visit was comfortable. I’d recommend them based on my own experience.</p><div class="actions"><button class="copy-btn">Copy & Open Google</button><button class="edit-btn">Edit</button></div><div class="note">Specific details make reviews more useful than generic praise.</div></article>
-
-</div>
+<section id="workflow" aria-live="polite">
+ <div class="section-head"><h2 id="view-title">What did you visit us for?</h2><p id="view-subtitle">Choose one path to get started.</p></div>
+ <div id="view-root"></div>
 </section>
-
 <section class="how">
-<div class="section-head" style="margin:0"><h2>Three elegant steps</h2><p>No forms. No account gymnastics.</p></div>
-<div class="steps">
-<div class="step"><b>01 · Choose</b><h3>Pick your style</h3><p>Select the review starter that most closely matches your real experience.</p></div>
-<div class="step"><b>02 · Personalize</b><h3>Make it yours</h3><p>Tap Edit and replace the highlighted details with what actually happened.</p></div>
-<div class="step"><b>03 · Copy & post</b><h3>Finish on Google</h3><p>The review is copied and Google's review composer opens. Tap the box, Paste, then Post.</p></div>
-</div>
+ <div class="section-head" style="margin:0"><h2>How it works</h2><p>Your words. Your real experience.</p></div>
+ <div class="steps">
+  <div class="step"><b>01 · Choose</b><h3>Select your service</h3><p>Pick the individual service or exact combo you received.</p></div>
+  <div class="step"><b>02 · Personalize</b><h3>Make it accurate</h3><p>Replace every highlighted prompt with details that genuinely reflect your visit.</p></div>
+  <div class="step"><b>03 · Copy & post</b><h3>Finish on Google</h3><p>Copy your words, open Google, paste the review and submit it yourself.</p></div>
+ </div>
 </section>
-
-<section class="cta"><div class="cta-inner"><div class="cta-kicker">Elite Perimeter Unisex Salon</div><h2>Your experience deserves your own words.</h2><p>Real details make a review more useful. Add the service, outcome, team experience, or anything else that genuinely reflects your visit.</p><a class="google-btn" href="https://search.google.com/local/writereview?placeid=ChIJ7xdCXQg_rjsRJY6eAmV-saE" target="_blank" rel="noopener" id="googleReviewLink"><span aria-hidden="true">G</span> Open Google Review Page</a></div></section>
+<section class="cta"><div class="cta-inner"><div class="cta-kicker">Elite Perimeter Unisex Salon</div><h2>Helpful feedback starts with real details.</h2><p>Only share a review if you personally visited. Your rating and wording are entirely your choice.</p><a class="google-btn" href="https://search.google.com/local/writereview?placeid=ChIJ7xdCXQg_rjsRJY6eAmV-saE" target="_blank" rel="noopener" id="googleReviewLink"><span aria-hidden="true">G</span> Open Google Review Page</a></div></section>
 </main>
 
 <footer class="wrap">Elite Perimeter Unisex Salon · Ullal Main Road, Jnananjyothinagar, Bengaluru, Karnataka 560056 · +91 80884 42684</footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+
 <script>
 const REVIEW_URL='https://search.google.com/local/writereview?placeid=ChIJ7xdCXQg_rjsRJY6eAmV-saE';
+const DATA={"categories":{"Hair Services":["Hair Cut","Hair Spa","Keratin Spa","Botox Spa"],"Facial & Skincare":["Cleanup","Chocolate Facial","Whitening Facial","Korean Glass Facial","Luxury 24K Gold Facial","Bridal Facial","Hyder Facial","Whitening Facial – 10 Steps","Face De-Tan"],"Waxing":["Full Arms Waxing","Underarms Waxing","Half Legs Waxing","Full Legs Waxing","Chocolate Waxing"],"Threading":["Eyebrow Threading","Upper Lip Threading","Chin Threading","Forehead Threading"],"Manicure & Pedicure":["Pedicure","Manicure","Lavender Pedi Spa","Lavender Mani Spa","Glass Shine Pedi Spa","Glass Shine Mani Spa"]},"combos":[["Hair Cut + Hair Spa Package",999,["Hair Cut","Hair Spa"]],["Cleanup + Waxing + Threading Package",999,["Cleanup","Full Arms Waxing","Underarms Waxing","Half Legs Waxing","Eyebrow Threading","Upper Lip Threading"]],["Chocolate Facial + Face De-Tan + Threading Package",1399,["Chocolate Facial","Face De-Tan","Eyebrow Threading","Upper Lip Threading","Chin Threading","Forehead Threading"]],["Chocolate Facial + Face De-Tan + Waxing Package",1399,["Chocolate Facial","Face De-Tan","Full Arms Waxing","Underarms Waxing","Full Legs Waxing"]],["Chocolate Facial + De-Tan + Waxing + Mani-Pedi Package",1799,["Chocolate Facial","Face De-Tan","Full Arms Waxing","Underarms Waxing","Half Legs Waxing","Pedicure","Manicure"]],["Complete Chocolate Facial Beauty Package",2299,["Chocolate Facial","Face De-Tan","Full Arms Waxing","Underarms Waxing","Half Legs Waxing","Eyebrow Threading","Upper Lip Threading","Pedicure","Manicure","Hair Cut","Keratin Spa"]],["Whitening Facial + Face De-Tan + Threading Package",1499,["Whitening Facial","Face De-Tan","Eyebrow Threading","Upper Lip Threading","Chin Threading","Forehead Threading"]],["Whitening Facial + Face De-Tan + Waxing Package",1499,["Whitening Facial","Face De-Tan","Full Arms Waxing","Underarms Waxing","Full Legs Waxing"]],["Whitening Facial + De-Tan + Waxing + Mani-Pedi Package",1899,["Whitening Facial","Face De-Tan","Full Arms Waxing","Underarms Waxing","Half Legs Waxing","Pedicure","Manicure"]],["Complete Whitening Facial Beauty Package",2399,["Whitening Facial","Face De-Tan","Full Arms Waxing","Underarms Waxing","Half Legs Waxing","Eyebrow Threading","Upper Lip Threading","Pedicure","Manicure","Hair Cut","Keratin Spa"]],["Korean Glass Facial Premium Package",3499,["Korean Glass Facial","Face De-Tan","Waxing","Threading","Lavender Mani Spa","Lavender Pedi Spa","Hair Cut","Botox Spa"]],["10-Step Whitening Facial Premium Package",3499,["Whitening Facial – 10 Steps","Face De-Tan","Waxing","Threading","Lavender Mani Spa","Lavender Pedi Spa","Hair Cut","Botox Spa"]],["Luxury 24K Gold Facial Premium Package",4499,["Luxury 24K Gold Facial","Face De-Tan","Chocolate Waxing","Threading","Glass Shine Pedi Spa","Glass Shine Mani Spa","Hair Cut","Botox Spa"]],["Bridal Facial / Hyder Facial Premium Package",4999,["Bridal Facial / Hyder Facial (package choice)","Face De-Tan","Chocolate Waxing","Threading","Glass Shine Pedi Spa","Glass Shine Mani Spa","Hair Cut","Botox Spa"]]]};
+const root=document.getElementById('view-root');
+const title=document.getElementById('view-title');
+const subtitle=document.getElementById('view-subtitle');
 const toast=document.getElementById('toast');
-let toastTimer;
-window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('done'),650));
-function showToast(message){toast.innerHTML=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2500)}
-function reviewText(el){return el.innerText.replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim()}
-
-document.querySelectorAll('.edit-btn').forEach(btn=>{
- btn.addEventListener('click',()=>{
-  const card=btn.closest('.review-card'),review=card.querySelector('.review');
-  const editing=review.getAttribute('contenteditable')==='true';
-  if(!editing){review.setAttribute('contenteditable','true');review.focus();btn.textContent='Done';showToast('Edit the highlighted details, then tap <span class="ok">Done</span>.')}
-  else{review.setAttribute('contenteditable','false');btn.textContent='Edit';showToast('Saved for this page.')}
- })
-});
-
-document.querySelectorAll('.copy-btn').forEach(btn=>{
- btn.addEventListener('click',async()=>{
-  const card=btn.closest('.review-card'),review=card.querySelector('.review');
-  if(review.getAttribute('contenteditable')==='true'){showToast('Tap <span class="ok">Done</span> before copying.');return}
-  const text=reviewText(review);let copied=false;
-  try{await navigator.clipboard.writeText(text);copied=true}
-  catch(e){
-   const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
-   document.body.appendChild(ta);ta.focus();ta.select();try{copied=document.execCommand('copy')}catch(_){}ta.remove();
-  }
-  if(copied){
-   btn.classList.add('copied');btn.textContent='Copied ✓ Opening Google…';
-   showToast('<span class="ok">Review copied ✓</span> Google is opening. Tap Paste, then Post.');
-   setTimeout(()=>window.location.href=REVIEW_URL,520);
-  }else{showToast('Copy was blocked by your browser. Select the review text manually.')}
- })
-});
+let toastTimer, historyStack=[];
+window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader')?.classList.add('done'),450));
+function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2800)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function goBack(){const previous=historyStack.pop();if(previous)previous();else renderHome();window.scrollTo({top:document.getElementById('workflow').offsetTop-24,behavior:'smooth'})}
+function toolbar(label){return '<div class="flow-toolbar"><button class="back-btn" type="button" id="backBtn">← Back</button><span class="flow-count">'+esc(label)+'</span></div>'}
+function setScreen(t,s,html,back){title.textContent=t;subtitle.textContent=s;root.innerHTML=html;const b=document.getElementById('backBtn');if(b)b.addEventListener('click',()=>{goBack()});}
+function push(fn){historyStack.push(fn)}
+function renderHome(){historyStack=[];setScreen('What did you visit us for?','Choose one path to get started.',`
+ <div class="choice-grid">
+  <button class="choice-card" id="separateChoice"><span class="choice-mark">✦</span><span class="eyebrow">28 individual services</span><strong>Separate Services</strong><span>Choose a category, then select the exact service you received.</span></button>
+  <button class="choice-card" id="comboChoice"><span class="choice-mark">◇</span><span class="eyebrow">14 salon offers</span><strong>Combo Services</strong><span>Choose the package you booked and the services included in your visit.</span></button>
+ </div>
+ <div class="policy-note">These are writing prompts, not ready-made customer testimonials. Please use only the details that match your own visit, and feel free to leave an honest rating or review in your own words.</div>`);
+ document.getElementById('separateChoice').onclick=()=>{push(renderHome);renderCategories()};
+ document.getElementById('comboChoice').onclick=()=>{push(renderHome);renderCombos()};
+}
+function renderCategories(){const entries=Object.entries(DATA.categories);setScreen('Choose a service category','Select the category containing the service you received.',toolbar('Separate services')+'<div class="category-grid">'+entries.map(([name,items],i)=>'<button class="category-card" data-category="'+esc(name)+'"><span class="eyebrow">Category '+String(i+1).padStart(2,'0')+'</span><strong>'+esc(name)+'</strong><span>'+items.length+' services</span></button>').join('')+'</div>');root.querySelectorAll('[data-category]').forEach(b=>b.onclick=()=>{const cat=b.dataset.category;push(renderCategories);renderServices(cat)})}
+function renderServices(cat){const items=DATA.categories[cat];setScreen(cat,'Select the exact service you personally received.',toolbar(cat)+'<div class="service-grid">'+items.map((name,i)=>'<button class="service-card" data-service="'+esc(name)+'"><span class="eyebrow">Service '+String(i+1).padStart(2,'0')+'</span><strong>'+esc(name)+'</strong></button>').join('')+'</div>');root.querySelectorAll('[data-service]').forEach(b=>b.onclick=()=>{const service=b.dataset.service;push(()=>renderServices(cat));renderTemplates({kind:'service',name:service,category:cat})})}
+function renderCombos(){setScreen('Choose your combo package','Select the package you booked. Prices shown are the listed package prices.',toolbar('Combo services')+'<div class="combo-grid">'+DATA.combos.map((c,i)=>'<button class="combo-card" data-combo="'+i+'"><span class="eyebrow">Combo '+String(i+1).padStart(2,'0')+'</span><span class="price">₹'+Number(c[1]).toLocaleString('en-IN')+'</span><strong>'+esc(c[0])+'</strong><p class="inclusions">'+esc(c[2].join(' · '))+'</p></button>').join('')+'</div><div class="policy-note">Package inclusions can vary by selected option or availability. Mention only the services you actually received.</div>');root.querySelectorAll('[data-combo]').forEach(b=>b.onclick=()=>{const c=DATA.combos[Number(b.dataset.combo)];push(renderCombos);renderTemplates({kind:'combo',name:c[0],items:c[2],price:c[1]})})}
+function makeTemplates(item){
+ const service=item.kind==='service';
+ const phrase=service?item.name:item.name.replace(/ Package$/i,'').replace(/ Premium Package$/i,'');
+ const subject=service?item.name.toLowerCase():phrase.toLowerCase();
+ const included=service?'':item.items.join(', ');
+ const first=service
+ ? 'I booked a <span class="placeholder">'+esc(subject)+'</span> at <span class="placeholder">Elite Perimeter Unisex Salon</span>. The service was <span class="placeholder">[describe how the appointment was handled]</span>, and my experience with <span class="placeholder">[one genuine detail or result]</span> was <span class="placeholder">[your honest reaction]</span>.'
+ : 'I chose the <span class="placeholder">'+esc(phrase)+'</span> at <span class="placeholder">Elite Perimeter Unisex Salon</span>. From the package, I received <span class="placeholder">[list only the included services you actually had]</span>. My experience was <span class="placeholder">[describe what genuinely stood out]</span>.';
+ const second=service
+ ? 'My visit to <span class="placeholder">Elite Perimeter Unisex Salon</span> was for <span class="placeholder">'+esc(subject)+'</span>. I appreciated <span class="placeholder">[a specific part of the consultation or service, if true]</span>. The final outcome was <span class="placeholder">[your honest view of the result]</span>. The salon is in <span class="placeholder">[Ullal / Jnananjyothinagar, Bengaluru, if relevant to your visit]</span>.'
+ : 'I visited <span class="placeholder">Elite Perimeter Unisex Salon</span> for its <span class="placeholder">'+esc(phrase)+'</span>. The parts of the combo I used were <span class="placeholder">[name the services you actually received]</span>. I found <span class="placeholder">[describe the staff, process or result accurately]</span>, and <span class="placeholder">[add one personal detail]</span>.';
+ return [
+  {label:'Simple & specific',heading:'A natural service review',html:first},
+  {label:'More detailed',heading:'Describe your visit',html:second}
+ ];
+}
+function renderTemplates(item){
+ const templates=makeTemplates(item),kind=item.kind==='service'?'Separate service':'Combo package';
+ const meta=item.kind==='service'?item.category:'Package price: ₹'+Number(item.price).toLocaleString('en-IN');
+ const html=toolbar(kind)+'<div class="policy-note"><strong>Before copying:</strong> Replace every highlighted prompt. Keep only statements that are true about your visit. The service phrase is included naturally once; do not add keywords that do not describe your experience.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Edit the highlighted prompts and keep this review in your own voice.</div></article>').join('')+'</div>';
+ setScreen(item.name,'Choose the wording closest to your actual experience, then personalize it.',html);
+ root.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{const p=root.querySelector('[data-review="'+btn.dataset.edit+'"]');const editing=p.getAttribute('contenteditable')==='true';if(!editing){p.setAttribute('contenteditable','true');p.focus();btn.textContent='Done';showToast('Edit the highlighted prompts, then tap Done.')}else{p.setAttribute('contenteditable','false');btn.textContent='Edit';showToast('Your edits are ready to copy.')}});
+ root.querySelectorAll('[data-copy]').forEach(btn=>btn.onclick=async()=>{const p=root.querySelector('[data-review="'+btn.dataset.copy+'"]');if(p.getAttribute('contenteditable')==='true'){showToast('Tap Done before copying.');return}const text=p.innerText.replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim();if(/\[[^\]]+\]/.test(text)){showToast('Replace all highlighted prompts before copying.');return}let copied=false;try{await navigator.clipboard.writeText(text);copied=true}catch(e){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{copied=document.execCommand('copy')}catch(_){}ta.remove()}if(copied){btn.textContent='Copied ✓ Opening Google…';btn.classList.add('copied');showToast('Review copied. Google is opening; paste and submit it yourself.');setTimeout(()=>{window.location.href=REVIEW_URL},650)}else showToast('Copy was blocked. Please select and copy the text manually.')});
+}
 document.getElementById('googleReviewLink').addEventListener('click',()=>showToast('Google review page opening…'));
+renderHome();
 </script>
 </body>
 </html>
