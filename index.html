@@ -111,6 +111,8 @@ footer{padding:0 0 32px;color:#85837c;font-size:10px;text-align:center;line-heig
 #view-root{min-height:240px}
 .choice-grid,.category-grid,.service-grid,.combo-grid,.template-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .choice-card,.category-card,.service-card,.combo-card,.template-card{width:100%;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.88);border-radius:22px;padding:22px;box-shadow:var(--shadow2);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;color:var(--ink)}
+.choice-card:hover{transform:translateY(-5px) scale(1.012);box-shadow:0 20px 38px rgba(41,91,211,.25),inset 0 1px 2px #fff}
+.choice-card:active{transform:translateY(1px) scale(.99)}
 .choice-card:hover,.category-card:hover,.service-card:hover,.combo-card:hover,.template-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#c4a15d}
 .choice-card .eyebrow,.category-card .eyebrow,.service-card .eyebrow,.combo-card .eyebrow,.template-card .eyebrow{display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:10px}
 .choice-card strong,.category-card strong,.service-card strong,.combo-card strong{display:block;font-family:"Playfair Display",Georgia,serif;font-size:24px;font-weight:600;margin-bottom:7px}
@@ -154,7 +156,9 @@ h1{font-family:"Manrope",sans-serif;font-size:clamp(32px,7vw,48px);font-weight:8
 .section-head{justify-content:center;text-align:center;margin:0 0 20px}.section-head h2{font-family:"Manrope",sans-serif;font-size:15px;font-weight:800;color:#52658e}.section-head p{display:none}
 .choice-grid{grid-template-columns:1fr;gap:18px;max-width:540px;margin:0 auto}
 .choice-card,.category-card,.service-card,.combo-card,.template-card{border:1px solid rgba(255,255,255,.95);background:linear-gradient(145deg,#f4f7ff,#e8efff);border-radius:25px;box-shadow:var(--shadow);color:#1c315f}
-.choice-card{min-height:116px;padding:22px 24px;display:grid;grid-template-columns:52px 1fr;grid-template-rows:auto auto;column-gap:16px;align-items:center}
+.choice-card{position:relative;isolation:isolate;overflow:hidden;min-height:116px;padding:22px 24px;display:grid;grid-template-columns:52px 1fr;grid-template-rows:auto auto;column-gap:16px;align-items:center}
+.choice-card:before{content:"";position:absolute;inset:-60% auto -60% -45%;width:35%;transform:rotate(22deg);background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);animation:buttonShine 3.8s ease-in-out infinite;z-index:-1;pointer-events:none}
+.choice-card:after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 1px 2px rgba(255,255,255,.95);pointer-events:none}
 .choice-card .choice-mark{grid-row:1/3;width:48px;height:48px;margin:0;border-radius:16px;background:linear-gradient(145deg,#61b5ff,#1749dc);color:white;box-shadow:5px 5px 12px rgba(52,95,201,.28),-4px -4px 10px #fff}
 .choice-card .eyebrow{margin:0 0 3px;color:#5272b5}
 .choice-card strong{font-family:"Manrope",sans-serif;font-size:19px;color:#172b5c;margin:0}
@@ -172,6 +176,8 @@ h1{font-family:"Manrope",sans-serif;font-size:clamp(32px,7vw,48px);font-weight:8
 .flow-toolbar{margin-bottom:20px}
 .toast{background:#1c3269;border:1px solid rgba(255,255,255,.3);box-shadow:0 12px 28px rgba(33,62,128,.25)}
 .loader{background:#eaf0ff}.loader-mark{box-shadow:var(--shadow)}
+@keyframes buttonShine{0%,35%{left:-50%}75%,100%{left:130%}}
+.choice-card .choice-mark svg{width:27px;height:27px;display:block;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
 @keyframes emblemFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @media(max-width:600px){
  header{padding-top:18px}.brand img{width:48px;height:48px}.hero{padding:22px 0 24px}.hero-emblem{width:78px;height:78px;border-radius:24px;font-size:35px}
@@ -196,12 +202,12 @@ h1{font-family:"Manrope",sans-serif;font-size:clamp(32px,7vw,48px);font-weight:8
 
 <main id="top" class="wrap">
 <section class="hero">
- <div class="hero-emblem" aria-hidden="true">✦</div>
+ <div class="hero-emblem" aria-hidden="true"><img src="undefined" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit"></div>
  <h1>Elite Perimeter</h1>
  <p class="salon-subtitle">UNISEX SALON</p>
 </section>
 <section id="workflow" aria-live="polite">
- <div class="section-head"><h2 id="view-title">What did you visit us for?</h2><p id="view-subtitle">Choose one path to get started.</p></div>
+ <div class="section-head"><h2 id="view-title">Choose a service</h2><p id="view-subtitle">Select Separate Services or Combo Services.</p></div>
  <div id="view-root"></div>
 </section>
 <section class="how" hidden>
@@ -234,12 +240,11 @@ function goBack(){const previous=historyStack.pop();if(previous)previous();else 
 function toolbar(label){return '<div class="flow-toolbar"><button class="back-btn" type="button" id="backBtn">← Back</button><span class="flow-count">'+esc(label)+'</span></div>'}
 function setScreen(t,s,html,back){title.textContent=t;subtitle.textContent=s;root.innerHTML=html;const b=document.getElementById('backBtn');if(b)b.addEventListener('click',()=>{goBack()});}
 function push(fn){historyStack.push(fn)}
-function renderHome(){historyStack=[];setScreen('What did you visit us for?','Choose one path to get started.',`
+function renderHome(){historyStack=[];setScreen('Choose a service','Select Separate Services or Combo Services.',`
  <div class="choice-grid">
-  <button class="choice-card" id="separateChoice"><span class="choice-mark">✦</span><span class="eyebrow">28 individual services</span><strong>Separate Services</strong><span>Choose a category, then select the exact service you received.</span></button>
-  <button class="choice-card" id="comboChoice"><span class="choice-mark">◇</span><span class="eyebrow">14 salon offers</span><strong>Combo Services</strong><span>Choose the package you booked and the services included in your visit.</span></button>
- </div>
- <div class="policy-note">These are writing prompts, not ready-made customer testimonials. Please use only the details that match your own visit, and feel free to leave an honest rating or review in your own words.</div>`);
+  <button class="choice-card" id="separateChoice"><span class="choice-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16M4 12h16M4 18.5h16"/><circle cx="8" cy="5.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="10" cy="18.5" r="1.5" fill="currentColor" stroke="none"/></svg></span><strong>Separate Services</strong></button>
+  <button class="choice-card" id="comboChoice"><span class="choice-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M8 9h8M8 13h5M8 16h3"/></svg></span><strong>Combo Services</strong></button>
+ </div>`);
  document.getElementById('separateChoice').onclick=()=>{push(renderHome);renderCategories()};
  document.getElementById('comboChoice').onclick=()=>{push(renderHome);renderCombos()};
 }
