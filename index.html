@@ -35,7 +35,7 @@ body:before{
 a{color:inherit} button{font:inherit}.wrap{width:min(1160px,92vw);margin:auto}
 
 .loader{position:fixed;inset:0;background:linear-gradient(145deg,#f4f7ff,#dfe9ff);display:grid;place-items:center;z-index:100;overflow:hidden;opacity:1;visibility:visible}
-.loader.done{opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s ease}
+.loader.done{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,visibility .18s ease}
 .loader-mark{width:104px;height:104px;border-radius:50%;overflow:hidden;box-shadow:12px 12px 28px rgba(63,104,207,.24),-10px -10px 26px #fff;transform:scale(1);animation:logoLaunch 1.5s cubic-bezier(.16,.78,.22,1) forwards;will-change:transform,opacity}
 .loader-mark img{width:100%;height:100%;object-fit:cover}
 @keyframes logoLaunch{0%{transform:scale(.72);opacity:0}12%{transform:scale(1);opacity:1}58%{transform:scale(1.12);opacity:1}100%{transform:scale(18);opacity:0}}
@@ -234,7 +234,15 @@ const title=document.getElementById('view-title');
 const subtitle=document.getElementById('view-subtitle');
 const toast=document.getElementById('toast');
 let toastTimer, historyStack=[];
-function finishIntro(){setTimeout(()=>document.getElementById('loader')?.classList.add('done'),1500)}
+function finishIntro(){
+ const overlay=document.getElementById('loader');
+ if(!overlay)return;
+ let finished=false;
+ const reveal=()=>{if(finished)return;finished=true;overlay.classList.add('done');setTimeout(()=>{overlay.style.display='none'},220)};
+ const mark=overlay.querySelector('.loader-mark');
+ mark?.addEventListener('animationend',reveal,{once:true});
+ window.setTimeout(reveal,1650);
+}
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',finishIntro,{once:true})}else{finishIntro()}
 function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2800)}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -242,7 +250,7 @@ function goBack(){const previous=historyStack.pop();if(previous)previous();else 
 function toolbar(label){return '<div class="flow-toolbar"><button class="back-btn" type="button" id="backBtn">← Back</button><span class="flow-count">'+esc(label)+'</span></div>'}
 function setScreen(t,s,html,back){title.textContent=t;subtitle.textContent=s;root.innerHTML=html;const b=document.getElementById('backBtn');if(b)b.addEventListener('click',()=>{goBack()});}
 function push(fn){historyStack.push(fn)}
-function renderHome(){historyStack=[];setScreen('Choose a service','Select Separate Services or Combo Services.',`
+function renderHome(){document.body.style.backgroundColor='#eaf0ff';historyStack=[];setScreen('Choose a service','Select Separate Services or Combo Services.',`
  <div class="choice-grid">
   <button class="choice-card" id="separateChoice"><span class="choice-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16M4 12h16M4 18.5h16"/><circle cx="8" cy="5.5" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="10" cy="18.5" r="1.5" fill="currentColor" stroke="none"/></svg></span><strong>Separate Services</strong></button>
   <button class="choice-card" id="comboChoice"><span class="choice-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M8 9h8M8 13h5M8 16h3"/></svg></span><strong>Combo Services</strong></button>
