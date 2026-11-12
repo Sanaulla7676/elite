@@ -265,18 +265,18 @@ function makeTemplates(item){
  const service=item.kind==='service';
  const phrase=service?item.name:item.name.replace(/ Package$/i,'').replace(/ Premium Package$/i,'');
  const subject=esc(service?item.name.toLowerCase():phrase.toLowerCase());
- const lead=service?'I visited Elite Perimeter Unisex Salon for '+subject+'.':'I visited Elite Perimeter Unisex Salon for the '+subject+'.';
+ const noun=service?'service':'package';
  return [
-  {label:'Short',heading:'Share your visit',html:lead+' I would like to describe my experience in my own words.'},
-  {label:'Personal',heading:'Your own experience',html:lead+' What stood out to me was '},
-  {label:'Detailed',heading:'Tell others about your visit',html:lead+' My thoughts about the service and overall visit are: '},
-  {label:'Feedback',heading:'Your honest feedback',html:lead+' Based on my own visit, my feedback is: '}
+  {label:'A simple review',heading:'Start with what mattered most',html:'The '+subject+' was the '+noun+' I chose. What mattered most to me was '},
+  {label:'A personal take',heading:'Describe what stood out',html:'One thing that stood out during my appointment was '},
+  {label:'A detailed review',heading:'Share the details that shaped your experience',html:'I had a few things in mind when choosing the '+subject+'. The part I would like to mention first is '},
+  {label:'A balanced review',heading:'Your overall impression',html:'My overall impression of this experience is best summed up by these details: '}
  ];
 }
 function renderTemplates(item){
  const templates=makeTemplates(item),kind=item.kind==='service'?'Separate service':'Combo package';
  const meta=item.kind==='service'?item.category:'Package price: ₹'+Number(item.price).toLocaleString('en-IN');
- const html=toolbar(kind)+'<div class="policy-note"><strong>Before copying:</strong> These are short starting lines. Add your own honest feedback before copying. Do not post wording that does not reflect your visit.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Tap the text to add your own experience. Only share what is accurate.</div></article>').join('')+'</div>';
+ const html=toolbar(kind)+'<div class="policy-note"><strong>Make it yours:</strong> Each option has a different opening. Add the real details that mattered to you, such as the result, consultation, comfort, hygiene, timing or value. Keep only details that match your experience.</div><div class="template-grid">'+templates.map((t,i)=>'<article class="template-card"><span class="eyebrow">'+esc(t.label)+' · '+esc(meta)+'</span><h3>'+esc(t.heading)+'</h3><p class="template-copy" data-review="'+i+'">'+t.html+'</p><div class="actions"><button class="copy-btn" data-copy="'+i+'">Copy & Open Google</button><button class="edit-btn" data-edit="'+i+'">Edit</button></div><div class="note">Tap the text to add your own experience. Only share what is accurate.</div></article>').join('')+'</div>';
  setScreen(item.name,'Choose a starting line and add your own honest feedback.',html);
  root.querySelectorAll('.template-copy').forEach(p=>p.setAttribute('contenteditable','true'));
  root.querySelectorAll('[data-edit]').forEach(btn=>btn.onclick=()=>{const p=root.querySelector('[data-review="'+btn.dataset.edit+'"]');const editing=p.getAttribute('contenteditable')==='true';if(!editing){p.setAttribute('contenteditable','true');p.focus();btn.textContent='Done';showToast('Edit the highlighted prompts, then tap Done.')}else{p.setAttribute('contenteditable','false');btn.textContent='Edit';showToast('Your edits are ready to copy.')}});
